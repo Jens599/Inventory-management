@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active {
+  background-color: rgb(209 213 219);
+  pointer-events: none;
+}
+
+.active > .activeParent {
+  color: rgb(17 24 39);
+}
+
+:invalid {
+  color: rgb(156 163 175);
+}
