@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from './Alert';
+
+interface dataObject {
+  name: string;
+  brand: string;
+  category: string;
+  style: string;
+  supplier: string;
+  purchasePrice: number;
+  quantity: number;
+  availability: number;
+  salesPrice: number;
+}
 
 const schema = z.object({
   name: z
@@ -27,7 +39,7 @@ const schema = z.object({
     .number({ invalid_type_error: 'Quantity must be define.' })
     .nonnegative('Quantity cannot be negative.')
     .min(1, { message: 'Quantity cannot be zero' }),
-  availability: z.string(),
+  availability: z.number(),
   salesPrice: z
     .number({ invalid_type_error: 'Sales Price must be define.' })
     .nonnegative('Sales Price cannot be negative.'),
@@ -38,6 +50,15 @@ type FormData = z.infer<typeof schema>;
 const AddItem = () => {
   const [message, setMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const [styles, setStyles] = useState(
+    'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-500 py-2 hidden'
+  );
+
+  const handleDismiss = () => {
+    setStyles(
+      'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-500 py-2 hidden'
+    );
+  };
 
   const {
     register,
@@ -47,7 +68,7 @@ const AddItem = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: dataObject) => {
     const {
       name,
       brand,
@@ -59,6 +80,8 @@ const AddItem = () => {
       availability,
       salesPrice,
     } = data;
+
+    console.log(data);
 
     const inventory = {
       name,
@@ -85,14 +108,18 @@ const AddItem = () => {
       console.log(json);
 
       if (!response.ok || !json) {
+        setStyles(
+          'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-500 py-2 flex'
+        );
         setShowAlert(true);
-        setMessage('Error Adding Item To Inventory');
+        setMessage('Error Adding Product To Inventory');
       }
       if (response.ok) {
-        console.log('new workout added:', json);
-        setMessage('');
-        setShowAlert(false);
-
+        setStyles(
+          'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-green-500 py-2 flex'
+        );
+        setShowAlert(true);
+        setMessage('Product Added To the Inventory');
         // dispatch({ type: 'CREATE_WORKOUT', payload: json });
       }
     } catch (e) {
@@ -107,7 +134,12 @@ const AddItem = () => {
         onSubmit={handleSubmit(onSubmit)}
         method='post'
       >
-        {showAlert && <Alert message={message} />}
+        <Alert
+          message={message}
+          styles={styles}
+          showAlert={showAlert}
+          handleDismiss={handleDismiss}
+        />
         <div
           className='relative z-10 flex flex-col items-start justify-start rounded-xl bg-white pb-10 pl-10 pr-10
             pt-10 shadow-2xl'
@@ -322,15 +354,15 @@ const AddItem = () => {
                   Availability
                 </p>
                 <select
-                  {...register('availability')}
+                  {...register('availability', { valueAsNumber: true })}
                   name='Availability of the Product'
                   id=''
                   className='mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
                   focus:border-black focus:outline-none'
                 >
-                  <option value='Yes'>Yes</option>
-                  <option value='No'>No</option>
+                  <option value='1'>Yes</option>
+                  <option value='0'>No</option>
                 </select>
               </div>
             </div>

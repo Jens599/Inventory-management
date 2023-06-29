@@ -1,19 +1,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
 
-const Alert = ({ message }) => {
-  const [alert, setAlert] = useState('true');
+interface props {
+  message: string;
+  styles: string;
+  showAlert: boolean;
+  handleDismiss: () => void;
+}
 
-  const resolveClass = () => {
-    const modifier = alert ? 'flex' : 'hidden';
-    return (
-      'items-center justify-between rounded-xl bg-red-500 py-2 ' + modifier
-    );
-  };
-
+const Alert = ({ message, styles, handleDismiss }: props) => {
   return (
-    <div className={resolveClass()}>
+    <div className={styles}>
       <div className='ml-7'>
         <FontAwesomeIcon
           icon={faCircleXmark}
@@ -24,7 +21,7 @@ const Alert = ({ message }) => {
       <FontAwesomeIcon
         icon={faXmark}
         className='mr-7'
-        onClick={() => setAlert(alert ? false : true)}
+        onClick={handleDismiss}
       />
     </div>
   );
