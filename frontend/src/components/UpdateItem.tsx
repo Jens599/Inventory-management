@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from './Alert';
+import { useParams } from 'react-router-dom';
 
 interface dataObject {
   name: string;
@@ -15,6 +16,18 @@ interface dataObject {
   availability: number;
   salesPrice: number;
 }
+
+type ItemDetails = {
+  name?: string;
+  brand?: string;
+  category?: string;
+  style?: string;
+  supplier?: string;
+  purchasePrice?: number;
+  quantity?: number;
+  availability?: number;
+  salesPrice?: number;
+};
 
 const schema = z.object({
   name: z
@@ -47,11 +60,24 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const AddItem = () => {
+const UpdateItem = () => {
   const [message, setMessage] = useState('');
   const [styles, setStyles] = useState(
     'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden'
   );
+  const [itemDetails, setItemDetails] = useState<ItemDetails>({
+    name: '',
+    brand: '',
+    category: '',
+    style: '',
+    supplier: '',
+    purchasePrice: 0,
+    quantity: 0,
+    availability: 0,
+    salesPrice: 0,
+  });
+
+  const { id } = useParams();
 
   const handleDismiss = () => {
     setStyles(
@@ -66,6 +92,27 @@ const AddItem = () => {
       );
     }, 2000);
   };
+
+  useEffect(() => {
+    const fetchItem = async () => {
+      const response = await fetch('/inventory/viewOne/' + id);
+
+      const json = await response.json();
+      console.log(json);
+
+      if (!response.ok) {
+        setStyles(
+          'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 flex'
+        );
+        setMessage('Error Fetching Product Details From Inventory');
+        handleAlertDismiss();
+      }
+
+      if (response.ok) setItemDetails(json);
+    };
+
+    fetchItem();
+  }, []);
 
   const {
     register,
@@ -89,7 +136,7 @@ const AddItem = () => {
       salesPrice,
     } = data;
 
-    console.log('data', data);
+    console.log(data);
 
     const inventory = {
       name,
@@ -102,11 +149,9 @@ const AddItem = () => {
       availability,
       salesPrice,
     };
-
-    console.log('inventory', inventory);
     try {
-      const response = await fetch('/inventory/addItem', {
-        method: 'POST',
+      const response = await fetch('/inventory/updateItem/' + id, {
+        method: 'PATCH',
         body: JSON.stringify(inventory),
         headers: {
           'Content-Type': 'application/json',
@@ -121,14 +166,14 @@ const AddItem = () => {
         setStyles(
           'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 flex'
         );
-        setMessage('Error Adding Product To Inventory');
+        setMessage('Error Updating Product In Inventory');
         handleAlertDismiss();
       }
       if (response.ok) {
         setStyles(
           'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-green-300 py-2 flex'
         );
-        setMessage('Product Added To the Inventory');
+        setMessage('Product Updated From The Inventory');
         handleAlertDismiss();
         reset();
       }
@@ -136,7 +181,7 @@ const AddItem = () => {
       setStyles(
         'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-green-300 py-2 flex'
       );
-      setMessage('Error Adding Product To Inventory');
+      setMessage('Error Updating Product In Inventory');
       console.log(err);
       handleAlertDismiss();
     }
@@ -174,6 +219,7 @@ const AddItem = () => {
                 </p>
                 <input
                   {...register('name')}
+                  value={itemDetails.name}
                   placeholder='Name of the Product'
                   type='text'
                   className='mb-0 ml-0 mr-0
@@ -194,6 +240,7 @@ const AddItem = () => {
                 </p>
                 <input
                   {...register('brand')}
+                  value={itemDetails.brand}
                   placeholder='Brand of the Product'
                   type='text'
                   className='mb-0 ml-0 mr-0
@@ -216,7 +263,7 @@ const AddItem = () => {
                 </p>
                 <select
                   {...register('category')}
-                  defaultValue=' '
+                  defaultValue={itemDetails.category}
                   name='category'
                   id='category'
                   className='mb-0 ml-0 mr-0
@@ -263,7 +310,7 @@ const AddItem = () => {
                 </p>
                 <select
                   {...register('style')}
-                  defaultValue=' '
+                  defaultValue={itemDetails.style}
                   name='style'
                   id='style'
                   className='mb-0 ml-0 mr-0
@@ -301,6 +348,7 @@ const AddItem = () => {
                 </p>
                 <input
                   {...register('supplier')}
+                  value={itemDetails.supplier}
                   placeholder='Supplier of the Product'
                   type='text'
                   className='mb-0 ml-0 mr-0
@@ -323,6 +371,7 @@ const AddItem = () => {
                 </p>
                 <input
                   {...register('purchasePrice', { valueAsNumber: true })}
+                  value={itemDetails.purchasePrice}
                   placeholder='Purchase Price of the Product'
                   type='number'
                   className='mb-0 ml-0 mr-0
@@ -347,6 +396,7 @@ const AddItem = () => {
                 </p>
                 <input
                   {...register('quantity', { valueAsNumber: true })}
+                  value={itemDetails.quantity}
                   placeholder='Quantity of the Product'
                   type='number'
                   className='mb-0 ml-0 mr-0
@@ -370,13 +420,13 @@ const AddItem = () => {
                 <select
                   {...register('availability', { valueAsNumber: true })}
                   name='Availability of the Product'
-                  id=''
+                  defaultValue={itemDetails.availability ? '1' : '0'}
                   className='mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
                   focus:border-black focus:outline-none'
                 >
-                  <option value={1}>Yes</option>
-                  <option value={0}>No</option>
+                  <option value='1'>Yes</option>
+                  <option value='0'>No</option>
                 </select>
               </div>
             </div>
@@ -417,4 +467,4 @@ const AddItem = () => {
   );
 };
 
-export default AddItem;
+export default UpdateItem;

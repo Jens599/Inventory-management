@@ -48,9 +48,9 @@ const Inventory = () => {
           Sell Product
         </button>
       </div>
-      <div className='relative w-[85vw] overflow-x-auto shadow-md sm:rounded-lg '>
+      <div className='relative w-[85vw] h-[79vh] overflow-x-auto shadow-md sm:rounded-lg '>
         <table className='w-full table-auto text-left text-sm text-gray-500 dark:text-gray-400'>
-          <thead className='bg-gray-50 text-xs uppercase text-gray-700 dark:bg-slate-700 dark:text-gray-400'>
+          <thead className='bg-gray-50 text-xs uppercase text-gray-700 dark:bg-slate-700 dark:text-gray-400 sticky top-0'>
             <tr>
               <th
                 scope='col'
@@ -112,7 +112,7 @@ const Inventory = () => {
               >
                 Created At
               </th>
-              <th></th>
+              <th className='px-6 py-3'>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -138,7 +138,10 @@ const Inventory = () => {
                   <td className='px-6 py-4'>{i.salesPrice}</td>
                   <td className='px-6 py-4'>{i.createdAt}</td>
                   <td className='whitespace-nowrap px-6 py-4'>
-                    <Link className='mr-5 hover:text-green-500'>
+                    <Link
+                      to={'/dashboard/updateItem/' + i._id}
+                      className='mr-5 hover:text-green-500'
+                    >
                       <abbr title='Update Item'>
                         <FontAwesomeIcon icon={faFilePen} />
                       </abbr>

@@ -4,7 +4,6 @@ import { faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
 interface props {
   message: string;
   styles: string;
-  showAlert: boolean;
   handleDismiss: () => void;
 }
 

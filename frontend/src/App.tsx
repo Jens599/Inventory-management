@@ -11,6 +11,7 @@ import Login from './components/Login';
 import DashboardLayout from './pages/layout/DashboardLayout';
 import Inventory from './components/Inventory';
 import AddItem from './components/AddItem';
+import UpdateItem from './components/UpdateItem';
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -51,6 +52,10 @@ const routes = createBrowserRouter(
         <Route
           path='addItem'
           element={<AddItem />}
+        />
+        <Route
+          path='updateItem/:id'
+          element={<UpdateItem />}
         />
       </Route>
     </Route>
