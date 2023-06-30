@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from './Alert';
+import { useInventoryContext } from '../hooks/useInventoryContext';
 
 interface dataObject {
   name: string;
@@ -49,15 +50,19 @@ type FormData = z.infer<typeof schema>;
 
 const AddItem = () => {
   const [message, setMessage] = useState('');
-  const [styles, setStyles] = useState(
-    'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden'
-  );
+  const [styles, setStyles] = useState('hidden');
 
   const handleDismiss = () => {
     setStyles(
       'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden'
     );
   };
+
+  const { dispatch } = useInventoryContext();
+
+  useEffect(() => {
+    setValue('availability', 1);
+  }, []);
 
   const handleAlertDismiss = () => {
     setTimeout(() => {
@@ -70,6 +75,7 @@ const AddItem = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<FormData>({
@@ -88,8 +94,6 @@ const AddItem = () => {
       availability,
       salesPrice,
     } = data;
-
-    console.log('data', data);
 
     const inventory = {
       name,
@@ -115,8 +119,6 @@ const AddItem = () => {
 
       const json = await response.json();
 
-      console.log(json);
-
       if (!response.ok || !json) {
         setStyles(
           'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 flex'
@@ -130,6 +132,9 @@ const AddItem = () => {
         );
         setMessage('Product Added To the Inventory');
         handleAlertDismiss();
+
+        dispatch({ type: 'ADD_INVENTORY', payload: json });
+
         reset();
       }
     } catch (err) {
@@ -369,14 +374,14 @@ const AddItem = () => {
                 </p>
                 <select
                   {...register('availability', { valueAsNumber: true })}
-                  name='Availability of the Product'
-                  id=''
+                  name='availability'
+                  id='availability'
                   className='mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
                   focus:border-black focus:outline-none'
                 >
-                  <option value={1}>Yes</option>
-                  <option value={0}>No</option>
+                  <option value='1'>Yes</option>
+                  <option value='0'>No</option>
                 </select>
               </div>
             </div>

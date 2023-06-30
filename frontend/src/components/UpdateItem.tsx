@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from './Alert';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useInventoryContext } from '../hooks/useInventoryContext';
 
 interface dataObject {
   name: string;
@@ -18,15 +19,15 @@ interface dataObject {
 }
 
 type ItemDetails = {
-  name?: string;
-  brand?: string;
-  category?: string;
-  style?: string;
-  supplier?: string;
-  purchasePrice?: number;
-  quantity?: number;
-  availability?: number;
-  salesPrice?: number;
+  name: string;
+  brand: string;
+  category: string;
+  style: string;
+  supplier: string;
+  purchasePrice: number;
+  quantity: number;
+  availability: number;
+  salesPrice: number;
 };
 
 const schema = z.object({
@@ -65,17 +66,14 @@ const UpdateItem = () => {
   const [styles, setStyles] = useState(
     'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden'
   );
-  const [itemDetails, setItemDetails] = useState<ItemDetails>({
-    name: '',
-    brand: '',
-    category: '',
-    style: '',
-    supplier: '',
-    purchasePrice: 0,
-    quantity: 0,
-    availability: 0,
-    salesPrice: 0,
-  });
+
+  const { dispatch } = useInventoryContext();
+
+  const navigate = useNavigate();
+
+  const [itemDetails, setItemDetails] = useState<ItemDetails>(
+    {} as ItemDetails
+  );
 
   const { id } = useParams();
 
@@ -108,7 +106,18 @@ const UpdateItem = () => {
         handleAlertDismiss();
       }
 
-      if (response.ok) setItemDetails(json);
+      if (response.ok) {
+        setItemDetails(json);
+        setValue('name', json.name);
+        setValue('brand', json.brand);
+        setValue('category', json.category);
+        setValue('style', json.style);
+        setValue('supplier', json.supplier);
+        setValue('purchasePrice', json.purchasePrice);
+        setValue('quantity', json.quantity);
+        setValue('availability', json.availability ? 1 : 0);
+        setValue('salesPrice', json.salesPrice);
+      }
     };
 
     fetchItem();
@@ -116,6 +125,7 @@ const UpdateItem = () => {
 
   const {
     register,
+    setValue,
     handleSubmit,
     reset,
     formState: { errors },
@@ -160,8 +170,6 @@ const UpdateItem = () => {
 
       const json = await response.json();
 
-      console.log(json);
-
       if (!response.ok || !json) {
         setStyles(
           'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 flex'
@@ -175,7 +183,9 @@ const UpdateItem = () => {
         );
         setMessage('Product Updated From The Inventory');
         handleAlertDismiss();
+        dispatch({ type: 'UPDATE_INVENTORY', payload: json });
         reset();
+        navigate('/dashboard/inventory');
       }
     } catch (err) {
       setStyles(
@@ -204,7 +214,7 @@ const UpdateItem = () => {
             pt-10 shadow-2xl'
         >
           <p className='w-full text-center font-serif text-xl font-medium leading-snug text-black'>
-            Add Item To Inventory
+            Update Item
           </p>
           <div className='relative mb-0 ml-0 mr-0 mt-6 w-full space-y-8'>
             {/* one Component */}
@@ -219,7 +229,7 @@ const UpdateItem = () => {
                 </p>
                 <input
                   {...register('name')}
-                  value={itemDetails.name}
+                  // value={itemDetails.name}
                   placeholder='Name of the Product'
                   type='text'
                   className='mb-0 ml-0 mr-0
@@ -240,7 +250,7 @@ const UpdateItem = () => {
                 </p>
                 <input
                   {...register('brand')}
-                  value={itemDetails.brand}
+                  // value={itemDetails.brand}
                   placeholder='Brand of the Product'
                   type='text'
                   className='mb-0 ml-0 mr-0
@@ -263,7 +273,7 @@ const UpdateItem = () => {
                 </p>
                 <select
                   {...register('category')}
-                  defaultValue={itemDetails.category}
+                  // defaultValue={itemDetails.category}
                   name='category'
                   id='category'
                   className='mb-0 ml-0 mr-0
@@ -310,7 +320,7 @@ const UpdateItem = () => {
                 </p>
                 <select
                   {...register('style')}
-                  defaultValue={itemDetails.style}
+                  // defaultValue={itemDetails.style}
                   name='style'
                   id='style'
                   className='mb-0 ml-0 mr-0
@@ -348,7 +358,7 @@ const UpdateItem = () => {
                 </p>
                 <input
                   {...register('supplier')}
-                  value={itemDetails.supplier}
+                  // value={itemDetails.supplier}
                   placeholder='Supplier of the Product'
                   type='text'
                   className='mb-0 ml-0 mr-0
@@ -371,7 +381,7 @@ const UpdateItem = () => {
                 </p>
                 <input
                   {...register('purchasePrice', { valueAsNumber: true })}
-                  value={itemDetails.purchasePrice}
+                  // value={itemDetails.purchasePrice}
                   placeholder='Purchase Price of the Product'
                   type='number'
                   className='mb-0 ml-0 mr-0
@@ -396,7 +406,7 @@ const UpdateItem = () => {
                 </p>
                 <input
                   {...register('quantity', { valueAsNumber: true })}
-                  value={itemDetails.quantity}
+                  // value={itemDetails.quantity}
                   placeholder='Quantity of the Product'
                   type='number'
                   className='mb-0 ml-0 mr-0
@@ -420,7 +430,7 @@ const UpdateItem = () => {
                 <select
                   {...register('availability', { valueAsNumber: true })}
                   name='Availability of the Product'
-                  defaultValue={itemDetails.availability ? '1' : '0'}
+                  // defaultValue={itemDetails.availability ? '1' : '0'}
                   className='mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
                   focus:border-black focus:outline-none'
@@ -440,6 +450,7 @@ const UpdateItem = () => {
               </p>
               <input
                 {...register('salesPrice', { valueAsNumber: true })}
+                // value={itemDetails.salesPrice}
                 placeholder='Sales Price of the Product'
                 type='number'
                 className='mb-0 ml-0 mr-0
@@ -457,7 +468,7 @@ const UpdateItem = () => {
                 className='ease inline-block w-full rounded-lg bg-indigo-500 px-3 py-2 text-center
                  font-medium text-white transition duration-200 hover:bg-indigo-600'
                 type='submit'
-                value='Add Product'
+                value='Update Product'
               />
             </div>
           </div>
