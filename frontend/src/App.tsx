@@ -4,14 +4,15 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from 'react-router-dom';
-import RootLayout from './pages/layout/RootLayout';
-import LandingPage from './pages/LandingPage';
-import Signup from './components/Signup';
-import Login from './components/Login';
-import DashboardLayout from './pages/layout/DashboardLayout';
-import Inventory from './components/Inventory';
+
 import AddItem from './components/AddItem';
+import Inventory from './components/Inventory';
+import Login from './components/Login';
+import Signup from './components/Signup';
 import UpdateItem from './components/UpdateItem';
+import LandingPage from './pages/LandingPage';
+import DashboardLayout from './pages/layout/DashboardLayout';
+import RootLayout from './pages/layout/RootLayout';
 
 const routes = createBrowserRouter(
   createRoutesFromElements(

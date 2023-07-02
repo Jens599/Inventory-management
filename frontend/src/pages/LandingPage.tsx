@@ -1,5 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+
 const LandingPage = () => {
   return (
     <section className='h-[calc(100vh-62px)] bg-white dark:bg-gray-900'>

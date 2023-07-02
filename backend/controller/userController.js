@@ -1,30 +1,24 @@
-const Inventory = require("../model/inventoryModel");
-const User = require("../model/userModel");
-const mongoose = require("mongoose");
+const User = require('../model/userModel');
+
+const jwt = require('jsonwebtoken');
+
+const privateKey = 'QMBjH^846j&$$71Hf62m';
+
+const createToken = (_id) => {
+  return jwt.sign({ _id }, privateKey, { expiresIn: '3d' });
+};
 
 // Create a new user
 const addUser = async (req, res) => {
   const { username, name, email, phone, password } = req.body;
 
-  // Check if the user already exists
-  const existingUser = await User.find({ email: email });
-  if (existingUser.length)
-    return res.status(400).json({ error: "account already exists" });
-
   try {
-    // Create a new user
-    const inventory = await User.create({
-      username,
-      name,
-      email,
-      phone,
-      password,
-    });
+    const user = await User.signup(username, name, email, phone, password);
 
-    // Return the user
-    res.status(200).json(inventory);
+    const token = createToken(user.id);
+
+    res.status(200).json({ Message: user, token });
   } catch (error) {
-    // Return an error there is one
     res.status(400).json({ error: error.message });
   }
 };
@@ -33,14 +27,15 @@ const addUser = async (req, res) => {
 const findUser = async (req, res) => {
   const { email, password } = req.body;
 
-  // Find the user
-  const user = await User.find({ email: email, password: password });
+  try {
+    const user = await User.login(email, password);
 
-  // Return if user doesn't exist
-  if (!user.length) return res.status(404).json({ userExists: false });
+    const token = createToken(user.id);
 
-  // Return the user if it exists
-  res.status(200).json({ userExists: true });
+    res.status(200).json({ user, token });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 module.exports = {

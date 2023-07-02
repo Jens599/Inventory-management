@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import Alert from './Alert';
+
 import { useInventoryContext } from '../hooks/useInventoryContext';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface dataObject {
   name: string;

@@ -1,11 +1,11 @@
-const express = require("express");
-const { mongoose } = require("mongoose");
+const express = require('express');
+const { mongoose } = require('mongoose');
 
-const routes = require("./routes/inventoryRoutes");
-const userRoutes = require("./routes/userRoutes");
+const routes = require('./routes/inventoryRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const port = 4000;
-const mongoDbURI = "mongodb://0.0.0.0:27017/InventoryManagement";
+const mongoDbURI = 'mongodb://0.0.0.0:27017/InventoryManagement';
 
 const app = express();
 
@@ -18,9 +18,9 @@ app.use((req, res, next) => {
 
 mongoose.connect(mongoDbURI).then(() => {
   app.listen(port, () => {
-    console.log("Listening to port:" + port + " Inventory");
+    console.log('Listening to port:' + port + ' Inventory');
   });
 });
 
-app.use("/inventory", routes);
-app.use("/inventory/users", userRoutes);
+app.use('/inventory', routes);
+app.use('/inventory/user', userRoutes);

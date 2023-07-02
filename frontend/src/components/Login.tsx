@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
 import hero from '../assets/login.jpg';
 import { useForm } from 'react-hook-form';
-import { TypeOf, z } from 'zod';
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const schema = z.object({
-  email: z.string().email('Enter an Email.'),
+  email: z.string().email('Email must be defined.'),
   password: z
     .string()
     .min(8, { message: 'Password must be at least 8 characters long.' }),
@@ -20,7 +19,7 @@ const Login = () => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: FormData) => {
     console.log(data);
   };
 
