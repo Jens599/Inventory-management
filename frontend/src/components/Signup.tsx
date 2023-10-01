@@ -6,37 +6,42 @@ import hero from '../assets/Signup.jpg';
 import { useSignup } from '../hooks/useSignup';
 import { Navigate } from 'react-router-dom';
 
-const schema = z.object({
-  username: z
-    .string()
-    .min(1, { message: 'Username must be defined.' })
-    .min(3, { message: 'Username must be at least 3 characters.' }),
-  name: z
-    .string()
-    .min(1, { message: 'Name must be defined' })
-    .regex(/(^[A-Za-z]+\s(?=[a-zA-Z])+)/, {
-      message: 'Please enter your full name.',
-    }),
-  email: z
-    .string()
-    .min(1, { message: 'Email must be defined.' })
-    .email('Please enter an email.'),
-  phone: z
-    .number({ invalid_type_error: 'Phone must be defined.' })
-    .min(1, { message: 'Phone must be defined.' })
-    .nonnegative('Phone cannot be a negative value.')
-    .min(9000000000, {
-      message: 'Phone must begin with a 9 and be of 10 digits.',
-    })
-    .max(9999999999, { message: 'Phone must be 10 digits.' }),
-  password: z
-    .string()
-    .min(1, { message: 'Password must be defined.' })
-    .min(8, { message: 'Password must be at least 8 characters long.' }),
-  cpassword: z
-    .string()
-    .min(1, { message: 'Confirm Password must be defined.' }),
-});
+const schema = z
+  .object({
+    username: z
+      .string()
+      .min(1, { message: 'Username must be defined.' })
+      .min(3, { message: 'Username must be at least 3 characters.' }),
+    name: z
+      .string()
+      .min(1, { message: 'Name must be defined' })
+      .regex(/(^[A-Za-z]+\s(?=[a-zA-Z])+)/, {
+        message: 'Please enter your full name.',
+      }),
+    email: z
+      .string()
+      .min(1, { message: 'Email must be defined.' })
+      .email('Please enter an email.'),
+    phone: z
+      .number({ invalid_type_error: 'Phone must be defined.' })
+      .min(1, { message: 'Phone must be defined.' })
+      .nonnegative('Phone cannot be a negative value.')
+      .min(9000000000, {
+        message: 'Phone must begin with a 9 and be of 10 digits.',
+      })
+      .max(9999999999, { message: 'Phone must be 10 digits.' }),
+    password: z
+      .string()
+      .min(1, { message: 'Password must be defined.' })
+      .min(8, { message: 'Password must be at least 8 characters long.' }),
+    cpassword: z
+      .string()
+      .min(1, { message: 'Confirm Password must be defined.' }),
+  })
+  .refine((data) => data.password === data.cpassword, {
+    message: 'Must Match Password Field.',
+    path: ['cpassword'],
+  });
 
 type FormData = z.infer<typeof schema>;
 
