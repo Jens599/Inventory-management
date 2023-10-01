@@ -28,7 +28,6 @@ const Modal = ({ id, quantity, style, handleClose }: Props) => {
     setVisible(style);
   }, [style]);
 
-
   const navigate = useNavigate();
 
   const { user } = useAuthContext();
@@ -61,7 +60,7 @@ const Modal = ({ id, quantity, style, handleClose }: Props) => {
 
       if (response.ok) {
         // dispatch({ type: 'UPDATE_INVENTORY', payload: json });
-        navigate('/dashboard');
+        navigate('/dashboard/home');
       }
     } catch (err) {
       console.error('Error:', err);

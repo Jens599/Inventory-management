@@ -4,8 +4,6 @@ import Sidebar from '../../components/Sidebar';
 const DashboardLayout = () => {
   const navigate = useNavigate();
 
-  navigate('/dashboard/inventory')
-
   return (
     <>
       <Sidebar />

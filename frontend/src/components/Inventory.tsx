@@ -143,6 +143,7 @@ const Inventory = () => {
             </tr>
           </thead>
           <tbody>
+            x{' '}
             {inventoryIsDefined &&
               inventory.map((item) => (
                 <tr
