@@ -28,7 +28,6 @@ const Modal = ({ id, quantity, style, handleClose }: Props) => {
     setVisible(style);
   }, [style]);
 
-  const { inventory, dispatch } = useInventoryContext();
 
   const navigate = useNavigate();
 
