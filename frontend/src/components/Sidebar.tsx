@@ -9,10 +9,10 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
-    <div className='group/mainDiv w-15 fixed z-50 h-[calc(100vh-62px)] origin-left transition hover:w-44 xl:w-44'>
-      <div className='flex h-full flex-1 flex-col overflow-y-auto border-r border-gray-300 pb-4 pt-5'>
-        <div className='flex-1 space-y-1 divide-y bg-white px-3'>
-          <ul className='space-y-2 overflow-x-hidden pb-2'>
+    <div className=' group/mainDiv w-15 fixed z-50 h-[calc(100vh-62px)] origin-left hover:w-44  xl:w-44'>
+      <div className=' flex h-full flex-1 flex-col overflow-y-auto border-r border-gray-300 pb-4 pt-5'>
+        <div className=' flex-1 space-y-1 divide-y bg-white px-3'>
+          <ul className=' space-y-2 overflow-x-hidden pb-2'>
             <li>
               <NavLink
                 to='home'
@@ -28,7 +28,7 @@ const Sidebar = () => {
               </NavLink>
             </li>
 
-            <li>
+            {/* <li>
               <NavLink
                 to='employee'
                 className='group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 '
@@ -48,7 +48,7 @@ const Sidebar = () => {
                   Employee
                 </span>
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink
                 to='inventory'
@@ -80,21 +80,8 @@ const Sidebar = () => {
                 </span>
               </NavLink>
             </li>
-            <li>
-              <a
-                href='#'
-                className='group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 '
-              >
-                <FontAwesomeIcon
-                  icon={faCircleChevronUp}
-                  className='activeParent h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900'
-                />
-                <span className='ml-3 hidden flex-1 whitespace-nowrap group-hover/mainDiv:inline-block xl:inline-block'>
-                  Sell Product
-                </span>
-              </a>
-            </li>
-            <li>
+
+            {/* <li>
               <a
                 href='#'
                 className='group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 '
@@ -107,8 +94,8 @@ const Sidebar = () => {
                   Notification
                 </span>
               </a>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <a
                 href='#'
                 className='group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 '
@@ -128,7 +115,7 @@ const Sidebar = () => {
                   Sign Out
                 </span>
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

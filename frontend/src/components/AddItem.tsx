@@ -6,6 +6,7 @@ import Alert from './Alert';
 
 import { useInventoryContext } from '../hooks/useInventoryContext';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 interface dataObject {
   name: string;
@@ -54,6 +55,8 @@ const AddItem = () => {
   const [message, setMessage] = useState('');
   const [styles, setStyles] = useState('hidden');
 
+  const { user } = useAuthContext();
+
   const handleDismiss = () => {
     setStyles(
       'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden'
@@ -85,6 +88,10 @@ const AddItem = () => {
   });
 
   const onSubmit = async (data: dataObject) => {
+    if (!user) {
+      return;
+    }
+
     const {
       name,
       brand,
@@ -109,13 +116,13 @@ const AddItem = () => {
       salesPrice,
     };
 
-    console.log('inventory', inventory);
     try {
-      const response = await fetch('/inventory/addItem', {
+      const response = await fetch('/api/inventory/addItem', {
         method: 'POST',
         body: JSON.stringify(inventory),
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
         },
       });
 

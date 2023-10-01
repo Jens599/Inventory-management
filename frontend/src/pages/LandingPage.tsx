@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const LandingPage = () => {
+  const { user } = useAuthContext();
+
   return (
-    <section className='h-[calc(100vh-62px)] bg-white dark:bg-gray-900'>
+    <section className='h-[calc(100vh-55px)] bg-white dark:bg-gray-900'>
       <div className='container mx-auto px-6 py-16 text-center'>
         <div className='mx-auto max-w-lg sm:max-w-3xl'>
           <h1 className='text-3xl font-bold text-gray-800 dark:text-white lg:text-4xl'>
@@ -15,9 +18,17 @@ const LandingPage = () => {
             spreadsheets and hello to seamless inventory management with our web
             app!
           </p>
-          <button className='mt-6 rounded-lg bg-blue-600 px-6 py-2.5 text-center text-sm font-medium capitalize leading-5 text-white hover:bg-blue-500 focus:outline-none lg:mx-0 lg:w-auto'>
-            <Link to='/signup'>Start Now</Link>
-          </button>
+
+          {!user ? (
+            <button className='mt-6 rounded-lg bg-blue-600 px-6 py-2.5 text-center text-sm font-medium capitalize leading-5 text-white hover:bg-blue-500 focus:outline-none lg:mx-0 lg:w-auto'>
+              <Link to='/signup'>Start Now</Link>
+            </button>
+          ) : (
+            <button className='mt-6 rounded-lg bg-blue-600 px-6 py-2.5 text-center text-sm font-medium capitalize leading-5 text-white hover:bg-blue-500 focus:outline-none lg:mx-0 lg:w-auto'>
+              <Link to='/dashboard/inventory'>Profile</Link>
+            </button>
+          )}
+
           <p className='mt-3 text-sm text-gray-400'>No Costs At All!</p>
         </div>
 

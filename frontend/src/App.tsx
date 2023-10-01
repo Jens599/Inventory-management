@@ -3,6 +3,7 @@ import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
 } from 'react-router-dom';
 
 import AddItem from './components/AddItem';
@@ -13,6 +14,7 @@ import UpdateItem from './components/UpdateItem';
 import LandingPage from './pages/LandingPage';
 import DashboardLayout from './pages/layout/DashboardLayout';
 import RootLayout from './pages/layout/RootLayout';
+import Report from './components/Report';
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -39,15 +41,13 @@ const routes = createBrowserRouter(
         path='dashboard'
         element={<DashboardLayout />}
       >
-        <Route path='home' />
+        <Route
+          path='home'
+          element={<Report />}
+        />
         <Route
           path='inventory'
           element={<Inventory />}
-        />
-
-        <Route
-          path='employee'
-          // element={<Employee />}
         />
 
         <Route

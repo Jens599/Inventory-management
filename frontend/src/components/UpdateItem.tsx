@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from './Alert';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInventoryContext } from '../hooks/useInventoryContext';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 interface dataObject {
   name: string;
@@ -17,18 +18,6 @@ interface dataObject {
   availability: number;
   salesPrice: number;
 }
-
-type ItemDetails = {
-  name: string;
-  brand: string;
-  category: string;
-  style: string;
-  supplier: string;
-  purchasePrice: number;
-  quantity: number;
-  availability: number;
-  salesPrice: number;
-};
 
 const schema = z.object({
   name: z
@@ -69,11 +58,9 @@ const UpdateItem = () => {
 
   const { dispatch } = useInventoryContext();
 
-  const navigate = useNavigate();
+  const { user } = useAuthContext();
 
-  const [itemDetails, setItemDetails] = useState<ItemDetails>(
-    {} as ItemDetails
-  );
+  const navigate = useNavigate();
 
   const { id } = useParams();
 
@@ -93,7 +80,9 @@ const UpdateItem = () => {
 
   useEffect(() => {
     const fetchItem = async () => {
-      const response = await fetch('/inventory/viewOne/' + id);
+      const response = await fetch('/api/inventory/viewOne/' + id, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
 
       const json = await response.json();
       console.log(json);
@@ -107,7 +96,6 @@ const UpdateItem = () => {
       }
 
       if (response.ok) {
-        setItemDetails(json);
         setValue('name', json.name);
         setValue('brand', json.brand);
         setValue('category', json.category);
@@ -146,8 +134,6 @@ const UpdateItem = () => {
       salesPrice,
     } = data;
 
-    console.log(data);
-
     const inventory = {
       name,
       brand,
@@ -160,11 +146,12 @@ const UpdateItem = () => {
       salesPrice,
     };
     try {
-      const response = await fetch('/inventory/updateItem/' + id, {
+      const response = await fetch('/api/inventory/updateItem/' + id, {
         method: 'PATCH',
         body: JSON.stringify(inventory),
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
         },
       });
 

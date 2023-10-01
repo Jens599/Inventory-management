@@ -1,14 +1,18 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faCircleChevronUp,
   faCircleXmark,
   faFilePen,
   faPlus,
   faTrash,
+  faMinus,
 } from '@fortawesome/free-solid-svg-icons';
-import { faMinus } from '@fortawesome/free-solid-svg-icons';
-import { useInventoryContext } from '../hooks/useInventoryContext';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import { useInventoryContext } from '../hooks/useInventoryContext';
+import Modal from './Modal';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 interface dataObject {
   _id: string;
@@ -26,29 +30,41 @@ interface dataObject {
 
 const Inventory = () => {
   const [inventoryIsDefined, setInventoryIsDefined] = useState(false);
+  const [itemSell, setItemSell] = useState<dataObject>({} as dataObject);
+  const [style, setStyle] = useState('hidden');
 
   const { inventory, dispatch } = useInventoryContext();
 
-  console.log(typeof inventory);
+  const { user } = useAuthContext();
 
   useEffect(() => {
     setInventoryIsDefined(false);
 
     const fetchInventory = async () => {
-      const response = await fetch('/inventory/viewAll');
+      const response = await fetch('/api//inventory/viewAll', {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
       const json = await response.json();
       if (response.ok) {
         dispatch({ type: 'SET_INVENTORY', payload: json });
         setInventoryIsDefined(true);
       }
     };
+    if (user) fetchInventory();
+  }, [dispatch, user]);
 
-    fetchInventory();
-  }, []);
+  const handleSell = (item: dataObject) => {
+    setItemSell(item);
+    setStyle('block');
+  };
 
   const handleDelete = async (id: string) => {
-    const response = await fetch('/inventory/removeItem/' + id, {
+    if (!user) {
+      return;
+    }
+    const response = await fetch('/api//inventory/removeItem/' + id, {
       method: 'DELETE',
+      headers: { Authorization: `Bearer ${user.token}` },
     });
 
     const json = await response.json();
@@ -57,35 +73,12 @@ const Inventory = () => {
   };
 
   return (
-    <div className='m-5 flex w-full flex-col items-center justify-center'>
-      <div className='my-2 flex w-[85vw] gap-32'>
-        <button
-          type='button'
-          className='mb-2 mr-2 w-full whitespace-nowrap rounded-xl bg-gray-800 px-5 py-2.5 text-sm font-medium text-white
-           hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700'
-        >
-          <FontAwesomeIcon
-            icon={faPlus}
-            className='pr-2 text-white'
-          />
-          Add Product
-        </button>
-        <button
-          type='button'
-          className='mb-2 mr-2 w-full whitespace-nowrap rounded-xl bg-gray-800 px-5 py-2.5 text-sm font-medium text-white
-           hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700'
-        >
-          <FontAwesomeIcon
-            icon={faMinus}
-            className='pr-2 text-white'
-          />
-          Sell Product
-        </button>
-      </div>
-      <div className='relative h-[79vh] w-[85vw] overflow-x-auto shadow-md sm:rounded-lg '>
+    <div className='relative m-5 mt-16 flex w-full flex-col items-center justify-center'>
+      <div className='h-[79vh] w-[85vw] overflow-x-auto shadow-md sm:rounded-lg '>
         <table className='w-full table-auto text-left text-sm text-gray-500 dark:text-gray-400'>
           <thead className='sticky top-0 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-slate-700 dark:text-gray-400'>
             <tr>
+              <th></th>
               <th
                 scope='col'
                 className='px-6 py-3'
@@ -156,6 +149,17 @@ const Inventory = () => {
                   key={item._id}
                   className='border-b bg-white dark:border-gray-700 dark:bg-slate-800'
                 >
+                  <td className='relative whitespace-nowrap  px-6 py-4'>
+                    <span>
+                      <abbr
+                        title='Sell Item'
+                        className='hover:text-green-500'
+                        onClick={() => handleSell(item)}
+                      >
+                        <FontAwesomeIcon icon={faCircleChevronUp} />
+                      </abbr>
+                    </span>
+                  </td>
                   <th
                     scope='row'
                     className='whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white'
@@ -176,7 +180,7 @@ const Inventory = () => {
                   <td className='whitespace-nowrap px-6 py-4'>
                     <Link
                       to={'/dashboard/updateItem/' + item._id}
-                      className='mr-5 hover:text-green-500'
+                      className='mr-5 hover:text-fuchsia-500'
                     >
                       <abbr title='Update Item'>
                         <FontAwesomeIcon icon={faFilePen} />
@@ -200,7 +204,7 @@ const Inventory = () => {
                     <FontAwesomeIcon
                       icon={faCircleXmark}
                       className='pr-2 text-red-950'
-                    />{' '}
+                    />
                     Error Loading The Inventory From The Server.
                   </p>
                 </td>
@@ -208,6 +212,13 @@ const Inventory = () => {
             )}
           </tbody>
         </table>
+        <Modal
+          user={user}
+          id={itemSell._id}
+          quantity={itemSell.quantity}
+          style={style}
+          handleClose={(style: string) => setStyle(style)}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const schema = mongoose.Schema;
 
@@ -41,10 +41,14 @@ const inventorySchema = new schema(
       type: Number,
       required: true,
     },
+    userId: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("inventory", inventorySchema);
+module.exports = mongoose.model('inventory', inventorySchema);

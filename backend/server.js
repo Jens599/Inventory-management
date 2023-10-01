@@ -3,6 +3,7 @@ const { mongoose } = require('mongoose');
 
 const routes = require('./routes/inventoryRoutes');
 const userRoutes = require('./routes/userRoutes');
+const soldRoute = require('./routes/soldRoute');
 
 const port = 4000;
 const mongoDbURI = 'mongodb://0.0.0.0:27017/InventoryManagement';
@@ -22,5 +23,6 @@ mongoose.connect(mongoDbURI).then(() => {
   });
 });
 
-app.use('/inventory', routes);
-app.use('/inventory/user', userRoutes);
+app.use('/api/inventory', routes);
+app.use('/api/user', userRoutes);
+app.use('/api/sold', soldRoute);

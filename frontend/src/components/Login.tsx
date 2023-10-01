@@ -2,6 +2,9 @@ import hero from '../assets/login.jpg';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useLogin } from '../hooks/useLogin';
+import { Navigate } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const schema = z.object({
   email: z.string().email('Email must be defined.'),
@@ -19,8 +22,12 @@ const Login = () => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
+  const { user } = useAuthContext();
+
+  const { login, error, token } = useLogin();
+
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    login(data.email, data.password);
   };
 
   return (
@@ -95,6 +102,12 @@ const Login = () => {
                 )}
               </div>
 
+              {error && <p className='text-xs text-red-500'>{error}</p>}
+              {token && (
+                <p className='text-xs text-green-500'>Successfully Logged In</p>
+              )}
+              {token && <Navigate to='/dashboard/inventory' />}
+
               <div className='relative'>
                 <input
                   type='submit'
@@ -104,6 +117,7 @@ const Login = () => {
                 />
               </div>
             </form>
+            {user != null ?? <Navigate to='/' />}
           </div>
           <svg
             viewBox='0 0 91 91'

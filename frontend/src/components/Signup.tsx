@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import hero from '../assets/Signup.jpg';
+import { useSignup } from '../hooks/useSignup';
+import { Navigate } from 'react-router-dom';
 
 const schema = z.object({
   username: z
@@ -27,7 +29,10 @@ const schema = z.object({
       message: 'Phone must begin with a 9 and be of 10 digits.',
     })
     .max(9999999999, { message: 'Phone must be 10 digits.' }),
-  password: z.string().min(1, { message: 'Password must be defined.' }),
+  password: z
+    .string()
+    .min(1, { message: 'Password must be defined.' })
+    .min(8, { message: 'Password must be at least 8 characters long.' }),
   cpassword: z
     .string()
     .min(1, { message: 'Confirm Password must be defined.' }),
@@ -44,8 +49,10 @@ const Signup = () => {
     resolver: zodResolver(schema),
   });
 
+  const { signup, error, token } = useSignup();
+
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    signup(data);
   };
 
   return (
@@ -205,6 +212,13 @@ const Signup = () => {
                 )}
               </div>
 
+              {error && <p className='text-xs text-red-500'>{error}</p>}
+              {token && (
+                <p className='text-xs text-green-500'>
+                  Successfully Registered
+                </p>
+              )}
+              {token && <Navigate to='/dashboard/home' />}
               <div className='relative'>
                 <input
                   type='submit'
