@@ -5,6 +5,9 @@ import { useForm } from 'react-hook-form';
 
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useAuthContext } from '../hooks/useAuthContext';
+import { useInventoryContext } from '../hooks/useInventoryContext';
+import { useNavigate, useNavigation } from 'react-router-dom';
 
 const schema = z.object({
   sellQuantity: z.number(),
@@ -25,7 +28,46 @@ const Modal = ({ id, quantity, style, handleClose }: Props) => {
     setVisible(style);
   }, [style]);
 
-  const { register } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { inventory, dispatch } = useInventoryContext();
+
+  const navigate = useNavigate();
+
+  const { user } = useAuthContext();
+
+  const { register, handleSubmit } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data) => {
+    const { sellQuantity } = data;
+
+    try {
+      const response = await fetch('/api/inventory/handleSell/' + id, {
+        method: 'PATCH',
+        body: JSON.stringify({ quantity: sellQuantity }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error('API Error - Status Code:', response.status);
+        const errorText = await response.text();
+        console.error('API Error - Response:', errorText);
+        return;
+      }
+
+      const json = await response.json();
+
+      if (response.ok) {
+        // dispatch({ type: 'UPDATE_INVENTORY', payload: json });
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  };
 
   return (
     <div>
@@ -33,7 +75,10 @@ const Modal = ({ id, quantity, style, handleClose }: Props) => {
         className={`absolute inset-0 m-auto flex w-[85vw] items-center justify-center bg-slate-800/60 ${visible}`}
       >
         <div className='flex h-2/4 w-2/4 flex-col items-center rounded-xl bg-white'>
-          <form className='h-full w-full'>
+          <form
+            className='h-full w-full'
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className='h-full w-full p-16'>
               <p className='flex items-center justify-end '>
                 <FontAwesomeIcon
