@@ -7,7 +7,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useInventoryContext } from '../hooks/useInventoryContext';
-import { useNavigate, useNavigation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const schema = z.object({
   sellQuantity: z.number(),
@@ -105,7 +105,7 @@ const Modal = ({ id, quantity, style, handleClose }: Props) => {
                   focus:border-black focus:outline-none'
                   />
                 </div>
-                <p>Available Quantity : {quantity}</p>
+                <p className='text-lg font-semibold'>Available Quantity : {quantity}</p>
               </div>
               <div className='relative'>
                 <input

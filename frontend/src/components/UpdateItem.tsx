@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Alert from './Alert';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useInventoryContext } from '../hooks/useInventoryContext';
-import { useAuthContext } from '../hooks/useAuthContext';
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Alert from "./Alert";
+import { useNavigate, useParams } from "react-router-dom";
+import { useInventoryContext } from "../hooks/useInventoryContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 interface dataObject {
   name: string;
@@ -22,38 +22,38 @@ interface dataObject {
 const schema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Name must be defined' })
-    .min(3, { message: 'Name must be at least 3 characters.' }),
+    .min(1, { message: "Name must be defined" })
+    .min(3, { message: "Name must be at least 3 characters." }),
   brand: z
-    .string({ required_error: 'Hello??' })
-    .min(1, { message: 'Brand must be defined.' }),
+    .string({ required_error: "Hello??" })
+    .min(1, { message: "Brand must be defined." }),
   category: z.string().regex(/^(?! $).*$/, {
-    message: 'Category must be defined.',
+    message: "Category must be defined.",
   }),
   style: z.string().regex(/^(?! $).*$/, {
-    message: 'Style must be defined.',
+    message: "Style must be defined.",
   }),
-  supplier: z.string().min(1, { message: 'Supplier must be defined.' }),
+  supplier: z.string().min(1, { message: "Supplier must be defined." }),
   purchasePrice: z
-    .number({ invalid_type_error: 'Purchase Price must be define.' })
-    .nonnegative('Purchase Price cannot be negative.')
-    .min(1, { message: 'Purchase Price cannot be zero' }),
+    .number({ invalid_type_error: "Purchase Price must be define." })
+    .nonnegative("Purchase Price cannot be negative.")
+    .min(1, { message: "Purchase Price cannot be zero" }),
   quantity: z
-    .number({ invalid_type_error: 'Quantity must be define.' })
-    .nonnegative('Quantity cannot be negative.')
-    .min(1, { message: 'Quantity cannot be zero' }),
+    .number({ invalid_type_error: "Quantity must be define." })
+    .nonnegative("Quantity cannot be negative.")
+    .min(1, { message: "Quantity cannot be zero" }),
   availability: z.number(),
   salesPrice: z
-    .number({ invalid_type_error: 'Sales Price must be define.' })
-    .nonnegative('Sales Price cannot be negative.'),
+    .number({ invalid_type_error: "Sales Price must be define." })
+    .nonnegative("Sales Price cannot be negative."),
 });
 
 type FormData = z.infer<typeof schema>;
 
 const UpdateItem = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [styles, setStyles] = useState(
-    'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden'
+    "items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden"
   );
 
   const { dispatch } = useInventoryContext();
@@ -66,21 +66,21 @@ const UpdateItem = () => {
 
   const handleDismiss = () => {
     setStyles(
-      'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden'
+      "items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden"
     );
   };
 
   const handleAlertDismiss = () => {
     setTimeout(() => {
       setStyles(
-        'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden'
+        "items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 hidden"
       );
     }, 2000);
   };
 
   useEffect(() => {
     const fetchItem = async () => {
-      const response = await fetch('/api/inventory/viewOne/' + id, {
+      const response = await fetch("/api/inventory/viewOne/" + id, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
 
@@ -88,22 +88,22 @@ const UpdateItem = () => {
 
       if (!response.ok) {
         setStyles(
-          'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 flex'
+          "items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 flex"
         );
-        setMessage('Error Fetching Product Details From Inventory');
+        setMessage("Error Fetching Product Details From Inventory");
         handleAlertDismiss();
       }
 
       if (response.ok) {
-        setValue('name', json.name);
-        setValue('brand', json.brand);
-        setValue('category', json.category);
-        setValue('style', json.style);
-        setValue('supplier', json.supplier);
-        setValue('purchasePrice', json.purchasePrice);
-        setValue('quantity', json.quantity);
-        setValue('availability', json.availability ? 1 : 0);
-        setValue('salesPrice', json.salesPrice);
+        setValue("name", json.name);
+        setValue("brand", json.brand);
+        setValue("category", json.category);
+        setValue("style", json.style);
+        setValue("supplier", json.supplier);
+        setValue("purchasePrice", json.purchasePrice);
+        setValue("quantity", json.quantity);
+        setValue("availability", json.availability ? 1 : 0);
+        setValue("salesPrice", json.salesPrice);
       }
     };
 
@@ -144,40 +144,44 @@ const UpdateItem = () => {
       availability,
       salesPrice,
     };
+
     try {
-      const response = await fetch('/api/inventory/updateItem/' + id, {
-        method: 'PATCH',
+      const response = await fetch("/api/inventory/updateItem/" + id, {
+        method: "PATCH",
         body: JSON.stringify(inventory),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       });
 
-      const json = await response.json();
+      const json = await response.json()
 
       if (!response.ok || !json) {
         setStyles(
-          'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 flex'
+          "items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-red-300 py-2 flex"
         );
-        setMessage('Error Updating Product In Inventory');
+        setMessage("Error Updating Product In Inventory");
         handleAlertDismiss();
       }
       if (response.ok) {
+
+        // updated file:
+
         setStyles(
-          'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-green-300 py-2 flex'
+          "items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-green-300 py-2 flex"
         );
-        setMessage('Product Updated From The Inventory');
+        setMessage("Product Updated From The Inventory");
         handleAlertDismiss();
-        dispatch({ type: 'UPDATE_INVENTORY', payload: json });
+        dispatch({ type: "UPDATE_INVENTORY", payload: json });
         reset();
-        navigate('/dashboard/inventory');
+        navigate("/dashboard/inventory");
       }
     } catch (err) {
       setStyles(
-        'items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-green-300 py-2 flex'
+        "items-center justify-between mb-5 shadow-2xl shadow-gray-500 rounded-xl bg-green-300 py-2 flex"
       );
-      setMessage('Error Updating Product In Inventory');
+      setMessage("Error Updating Product In Inventory");
       console.log(err);
       handleAlertDismiss();
     }
@@ -186,9 +190,9 @@ const UpdateItem = () => {
   return (
     <>
       <form
-        className='mx-auto mt-16 w-1/2'
+        className="mx-auto mt-16 w-1/2"
         onSubmit={handleSubmit(onSubmit)}
-        method='post'
+        method="post"
       >
         <Alert
           message={message}
@@ -196,265 +200,257 @@ const UpdateItem = () => {
           handleDismiss={handleDismiss}
         />
         <div
-          className='relative z-10 flex flex-col items-start justify-start rounded-xl bg-white pb-10 pl-10 pr-10
-            pt-10 shadow-2xl'
+          className="relative z-10 flex flex-col items-start justify-start rounded-xl bg-white pb-10 pl-10 pr-10
+            pt-10 shadow-2xl"
         >
-          <p className='w-full text-center font-serif text-xl font-medium leading-snug text-black'>
+          <p className="w-full text-center font-serif text-xl font-medium leading-snug text-black">
             Update Item
           </p>
-          <div className='relative mb-0 ml-0 mr-0 mt-6 w-full space-y-8'>
+          <div className="relative mb-0 ml-0 mr-0 mt-6 w-full space-y-8">
             {/* one Component */}
 
-            <div className='flex justify-center gap-5 '>
-              <div className='relative w-1/2'>
+            <div className="flex justify-center gap-5 ">
+              <div className="relative w-1/2">
                 <p
-                  className='absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                  className="absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
                 >
                   Name
                 </p>
                 <input
-                  {...register('name')}
+                  {...register("name")}
                   // value={itemDetails.name}
-                  placeholder='Name of the Product'
-                  type='text'
-                  className='mb-0 ml-0 mr-0
+                  placeholder="Name of the Product"
+                  type="text"
+                  className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
                 />
                 {errors.name && (
-                  <p className='text-xs text-red-500'>{errors.name.message}</p>
+                  <p className="text-xs text-red-500">{errors.name.message}</p>
                 )}
               </div>
 
-              <div className='relative w-1/2'>
+              <div className="relative w-1/2">
                 <p
-                  className='absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                  className="absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
                 >
                   Brand
                 </p>
                 <input
-                  {...register('brand')}
+                  {...register("brand")}
                   // value={itemDetails.brand}
-                  placeholder='Brand of the Product'
-                  type='text'
-                  className='mb-0 ml-0 mr-0
+                  placeholder="Brand of the Product"
+                  type="text"
+                  className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
                 />
                 {errors.brand && (
-                  <p className='text-xs text-red-500'>{errors.brand.message}</p>
+                  <p className="text-xs text-red-500">{errors.brand.message}</p>
                 )}
               </div>
             </div>
 
-            <div className='flex justify-center gap-5 '>
-              <div className='relative w-1/2'>
+            <div className="flex justify-center gap-5 ">
+              <div className="relative w-1/2">
                 <p
-                  className='absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                  className="absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
                 >
                   Category
                 </p>
                 <select
-                  {...register('category')}
+                  {...register("category")}
                   // defaultValue={itemDetails.category}
-                  name='category'
-                  id='category'
-                  className='mb-0 ml-0 mr-0
+                  name="category"
+                  id="category"
+                  className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
                 >
-                  <option
-                    value=' '
-                    disabled
-                    hidden
-                  >
+                  <option value=" " disabled hidden>
                     Category of the Product
                   </option>
-                  <option value='shirts'>Shirts</option>
-                  <option value='pants'>Pants</option>
-                  <option value='shorts'>Shorts</option>
-                  <option value='suits'>Suits</option>
-                  <option value='jackets'>Jackets</option>
-                  <option value='sweaters'>Sweaters</option>
-                  <option value='hoodies'>Hoodies</option>
-                  <option value='coats'>Coats</option>
-                  <option value='vests'>Vests</option>
-                  <option value='swimwear'>Swimwear</option>
-                  <option value='underwear'>Underwear</option>
-                  <option value='socks'>Socks</option>
-                  <option value='sleepwear'>Sleepwear</option>
-                  <option value='accessories'>Accessories</option>
-                  <option value='shoes'>Shoes</option>
-                  <option value='other'>Other</option>
+                  <option value="shirts">Shirts</option>
+                  <option value="pants">Pants</option>
+                  <option value="shorts">Shorts</option>
+                  <option value="suits">Suits</option>
+                  <option value="jackets">Jackets</option>
+                  <option value="sweaters">Sweaters</option>
+                  <option value="hoodies">Hoodies</option>
+                  <option value="coats">Coats</option>
+                  <option value="vests">Vests</option>
+                  <option value="swimwear">Swimwear</option>
+                  <option value="underwear">Underwear</option>
+                  <option value="socks">Socks</option>
+                  <option value="sleepwear">Sleepwear</option>
+                  <option value="accessories">Accessories</option>
+                  <option value="shoes">Shoes</option>
+                  <option value="other">Other</option>
                 </select>
                 {errors.category && (
-                  <p className='text-xs text-red-500'>
+                  <p className="text-xs text-red-500">
                     {errors.category.message}
                   </p>
                 )}
               </div>
 
-              <div className='relative w-1/2'>
+              <div className="relative w-1/2">
                 <p
-                  className='absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                  className="absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
                 >
                   Style
                 </p>
                 <select
-                  {...register('style')}
+                  {...register("style")}
                   // defaultValue={itemDetails.style}
-                  name='style'
-                  id='style'
-                  className='mb-0 ml-0 mr-0
+                  name="style"
+                  id="style"
+                  className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
                 >
-                  <option
-                    value=' '
-                    disabled
-                    hidden
-                  >
+                  <option value=" " disabled hidden>
                     Style of the Product
                   </option>
-                  <option value='formal'>Formal</option>
-                  <option value='sports'>Sports</option>
-                  <option value='casual'>Casual</option>
-                  <option value='athletic'>Athletic</option>
-                  <option value='business'>Business</option>
-                  <option value='vintage'>Vintage</option>
-                  <option value='other'>Other</option>
+                  <option value="formal">Formal</option>
+                  <option value="sports">Sports</option>
+                  <option value="casual">Casual</option>
+                  <option value="athletic">Athletic</option>
+                  <option value="business">Business</option>
+                  <option value="vintage">Vintage</option>
+                  <option value="other">Other</option>
                 </select>
                 {errors.style && (
-                  <p className='text-xs text-red-500'>{errors.style.message}</p>
+                  <p className="text-xs text-red-500">{errors.style.message}</p>
                 )}
               </div>
             </div>
 
-            <div className='flex justify-center gap-5 '>
-              <div className='relative w-1/2'>
+            <div className="flex justify-center gap-5 ">
+              <div className="relative w-1/2">
                 <p
-                  className='absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                  className="absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
                 >
                   Supplier
                 </p>
                 <input
-                  {...register('supplier')}
+                  {...register("supplier")}
                   // value={itemDetails.supplier}
-                  placeholder='Supplier of the Product'
-                  type='text'
-                  className='mb-0 ml-0 mr-0
+                  placeholder="Supplier of the Product"
+                  type="text"
+                  className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
                 />
                 {errors.supplier && (
-                  <p className='text-xs text-red-500'>
+                  <p className="text-xs text-red-500">
                     {errors.supplier.message}
                   </p>
                 )}
               </div>
 
-              <div className='relative w-1/2'>
+              <div className="relative w-1/2">
                 <p
-                  className='absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                  className="absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
                 >
                   Purchase Price
                 </p>
                 <input
-                  {...register('purchasePrice', { valueAsNumber: true })}
+                  {...register("purchasePrice", { valueAsNumber: true })}
                   // value={itemDetails.purchasePrice}
-                  placeholder='Purchase Price of the Product'
-                  type='number'
-                  className='mb-0 ml-0 mr-0
+                  placeholder="Purchase Price of the Product"
+                  type="number"
+                  className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
                 />
                 {errors.purchasePrice && (
-                  <p className='text-xs text-red-500'>
+                  <p className="text-xs text-red-500">
                     {errors.purchasePrice.message}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className='flex justify-center gap-5 '>
-              <div className='relative w-1/2'>
+            <div className="flex justify-center gap-5 ">
+              <div className="relative w-1/2">
                 <p
-                  className='absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                  className="absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
                 >
                   Quantity
                 </p>
                 <input
-                  {...register('quantity', { valueAsNumber: true })}
+                  {...register("quantity", { valueAsNumber: true })}
                   // value={itemDetails.quantity}
-                  placeholder='Quantity of the Product'
-                  type='number'
-                  className='mb-0 ml-0 mr-0
+                  placeholder="Quantity of the Product"
+                  type="number"
+                  className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
                 />
                 {errors.quantity && (
-                  <p className='text-xs text-red-500'>
+                  <p className="text-xs text-red-500">
                     {errors.quantity.message}
                   </p>
                 )}
               </div>
 
-              <div className='relative w-1/2'>
+              <div className="relative w-1/2">
                 <p
-                  className='absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                  className="absolute -mt-1 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
                 >
                   Availability
                 </p>
                 <select
-                  {...register('availability', { valueAsNumber: true })}
-                  name='Availability of the Product'
+                  {...register("availability", { valueAsNumber: true })}
+                  name="Availability of the Product"
                   // defaultValue={itemDetails.availability ? '1' : '0'}
-                  className='mb-0 ml-0 mr-0
+                  className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
                 >
-                  <option value='1'>Yes</option>
-                  <option value='0'>No</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
                 </select>
               </div>
             </div>
 
-            <div className='relative'>
+            <div className="relative">
               <p
-                className='absolute -mt-3 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
-                  text-gray-600'
+                className="absolute -mt-3 mb-0 ml-2 mr-0 bg-white px-2 py-0 text-sm font-medium
+                  text-gray-600"
               >
                 Sales Price
               </p>
               <input
-                {...register('salesPrice', { valueAsNumber: true })}
+                {...register("salesPrice", { valueAsNumber: true })}
                 // value={itemDetails.salesPrice}
-                placeholder='Sales Price of the Product'
-                type='number'
-                className='mb-0 ml-0 mr-0
+                placeholder="Sales Price of the Product"
+                type="number"
+                className="mb-0 ml-0 mr-0
                   mt-2 block w-full rounded-md border border-gray-300 bg-white p-3 text-sm  text-black placeholder-gray-400
-                  focus:border-black focus:outline-none'
+                  focus:border-black focus:outline-none"
               />
               {errors.salesPrice && (
-                <p className='text-xs text-red-500'>
+                <p className="text-xs text-red-500">
                   {errors.salesPrice.message}
                 </p>
               )}
             </div>
-            <div className='relative'>
+            <div className="relative">
               <input
-                className='ease inline-block w-full rounded-lg bg-indigo-500 px-3 py-2 text-center
-                 font-medium text-white transition duration-200 hover:bg-indigo-600'
-                type='submit'
-                value='Update Product'
+                className="ease inline-block w-full rounded-lg bg-indigo-500 px-3 py-2 text-center
+                 font-medium text-white transition duration-200 hover:bg-indigo-600"
+                type="submit"
+                value="Update Product"
               />
             </div>
           </div>

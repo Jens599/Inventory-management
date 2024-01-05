@@ -1,4 +1,4 @@
-import { createContext, useReducer } from 'react';
+import { createContext, useReducer } from "react";
 
 interface data {
   _id: string;
@@ -25,17 +25,17 @@ export const InventoryContext = createContext<dataObject>(defaultValue);
 
 export const InventoryReducer = (state, action) => {
   switch (action.type) {
-    case 'SET_INVENTORY':
+    case "SET_INVENTORY":
       return { inventory: action.payload };
-    case 'ADD_INVENTORY':
+    case "ADD_INVENTORY":
       return { inventory: [action.payload, ...state.inventory] };
-    case 'UPDATE_INVENTORY':
+    case "UPDATE_INVENTORY":
       return {
-        inventory: state.inventory.map((i: data) => {
-          i._id === action.payload._id ? action.payload : i;
-        }),
+        inventory: state.inventory.map((i: data) =>
+          i._id === action.payload._id ? action.payload : i
+        ),
       };
-    case 'DELETE_INVENTORY':
+    case "DELETE_INVENTORY":
       return {
         inventory: state.inventory.filter(
           (i: data) => i._id !== action.payload._id

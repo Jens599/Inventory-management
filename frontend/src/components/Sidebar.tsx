@@ -9,10 +9,10 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
-    <div className=' group/mainDiv w-15 fixed z-50 h-[calc(100vh-62px)] origin-left hover:w-44  xl:w-44'>
-      <div className=' flex h-full flex-1 flex-col overflow-y-auto border-r border-gray-300 pb-4 pt-5'>
-        <div className=' flex-1 space-y-1 divide-y bg-white px-3'>
-          <ul className=' space-y-2 overflow-x-hidden pb-2'>
+    <div className='group/mainDiv w-15 fixed h-[calc(100vh-62px)] origin-left hover:w-44  xl:w-44'>
+      <div className='bg-white h-full pt-8 border-r-2 border-gray-500 px-2'>
+        <div className=''>
+          <ul className='space-y-3'>
             <li>
               <NavLink
                 to='home'

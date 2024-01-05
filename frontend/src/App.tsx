@@ -66,9 +66,9 @@ const routes = createBrowserRouter(
 const App = () => {
   return (
     <>
-      <h1>
+      <div className='h-screen'>
         <RouterProvider router={routes} />
-      </h1>
+      </div>
     </>
   );
 };

@@ -223,7 +223,7 @@ const Signup = () => {
                   Successfully Registered
                 </p>
               )}
-              {token && <Navigate to='/dashboard/home' />}
+              {token && <Navigate to='/dashboard/addItem' />}
               <div className='relative'>
                 <input
                   type='submit'

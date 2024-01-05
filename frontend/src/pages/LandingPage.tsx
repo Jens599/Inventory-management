@@ -5,8 +5,8 @@ const LandingPage = () => {
   const { user } = useAuthContext();
 
   return (
-    <section className='h-[calc(100vh-55px)] bg-white dark:bg-gray-900'>
-      <div className='container mx-auto px-6 py-16 text-center'>
+    <section className='h-full bg-white dark:bg-gray-900'>
+      <div className='mx-auto px-6 py-16 text-center'>
         <div className='mx-auto max-w-lg sm:max-w-3xl'>
           <h1 className='text-3xl font-bold text-gray-800 dark:text-white lg:text-4xl'>
             Streamline and Optimize Your Inventory with Ease
@@ -38,6 +38,7 @@ const LandingPage = () => {
             src='https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80'
           />
         </div>
+        <div className='h-32 dark:bg-slate-900 w-full'></div>
       </div>
     </section>
   );
